@@ -38,14 +38,14 @@ architecture Behavioral of CPU is
 	signal RAMINPUT :MEMORY( 16#0# to 16#F# );
 -----------------------------------------------------
 	constant clockHZ:integer:=1_000_000;
-	signal PC	:integer range 0 to ROM'LENGTH;--16#FFFF#;--Ö¸ÁîµØÖ·¼Ä´æÆ÷
-	signal clock:std_logic;			--CPUÊ±ÖÓ
-	signal next_state :states:=PRE0;	--CPU×´Ì¬¼Ä´æÆ÷
---	signal current_state:states:=PRE0;	--CPU×´Ì¬¼Ä´æÆ÷ --simu
-----ÄÚ²¿Êı¾İ´æ´¢Æ÷&ÌØÊâ¹¦ÄÜ¼Ä´æÆ÷ RAMSFR ¼°³õÖµ
+	signal PC	:integer range 0 to ROM'LENGTH;--16#FFFF#;--æŒ‡ä»¤åœ°å€å¯„å­˜å™¨
+	signal clock:std_logic;			--CPUæ—¶é’Ÿ
+	signal next_state :states:=PRE0;	--CPUçŠ¶æ€å¯„å­˜å™¨
+--	signal current_state:states:=PRE0;	--CPUçŠ¶æ€å¯„å­˜å™¨ --simu
+----å†…éƒ¨æ•°æ®å­˜å‚¨å™¨&ç‰¹æ®ŠåŠŸèƒ½å¯„å­˜å™¨ RAMSFR åŠåˆå€¼
 	signal RAMSFR :MEMORY( 16#00# to 16#FF# ):=(
 		aSP=>X"07",aP0=>X"FF",aP1=>X"FF",aP2=>X"FF",aP3=>X"FF",others=>X"00");
-----RAMSFR¼Ä´æÆ÷µØÖ·
+----RAMSFRå¯„å­˜å™¨åœ°å€
 	signal aR0 :integer:= 16#00#;
 --	signal aR1 :integer:= 16#01#;
 --	signal aR2 :integer:= 16#02#;
@@ -85,9 +85,9 @@ begin
 ----------------------------------------------------------------------------
 ----CPU
 	process(clock,reset)
-		variable IR	:MEMORY(0 to 2);		--Ö¸Áî¼Ä´æÆ÷(0,1,2)
-		variable ilen:integer range 1 to 3;	--Ö¸Áî³¤¶È¼Ä´æ
-	--ALUÖĞÁÙÊ±¼Ä´æÆ÷
+		variable IR	:MEMORY(0 to 2);		--æŒ‡ä»¤å¯„å­˜å™¨(0,1,2)
+		variable ilen:integer range 1 to 3;	--æŒ‡ä»¤é•¿åº¦å¯„å­˜
+	--ALUä¸­ä¸´æ—¶å¯„å­˜å™¨
 --		variable vbit	:STD_LOGIC;
 --		variable swap1,swap2:STD_LOGIC_VECTOR(3 downto 0);
 		variable temp1,temp2:STD_LOGIC_VECTOR(7 downto 0);
@@ -98,7 +98,7 @@ begin
 		variable rel:INTEGER;
 		variable tm1:INTEGER;
 		variable tm2:INTEGER;
---	--¼Ä´æÆ÷
+--	--å¯„å­˜å™¨
 		variable DPTR:STD_LOGIC_VECTOR(15 downto 0);
 	begin
 	if reset='1'then
@@ -106,15 +106,15 @@ begin
 	elsif rising_edge(clock) then
 		RAMSFR( 16#C0# to 16#CF# ) <= RAMINPUT;
 		case next_state is
-			when PRE0	=> next_state<=RST0; PC<=0;		--¸´Î»Ç°×¼±¸×´Ì¬
-			when RST0	=> next_state<=GETI; PC<=0; 	--¸´Î»×´Ì¬
+			when PRE0	=> next_state<=RST0; PC<=0;		--å¤ä½å‰å‡†å¤‡çŠ¶æ€
+			when RST0	=> next_state<=GETI; PC<=0; 	--å¤ä½çŠ¶æ€
 							RAMSFR(aSP)<=X"07";
 							RAMSFR(aP0)<=X"FF";
 							RAMSFR(aP1)<=X"FF";
 							RAMSFR(aP2)<=X"FF";
 							RAMSFR(aP3)<=X"FF";
 			when GETI	=> next_state<=PCPP; ilen:=lengthof(ROM(PC));
- 							IR:=(0=>ROM(PC),1=>ROM(PC+1),2=>ROM(PC+2));	--È¡Ö¸Áî
+ 							IR:=(0=>ROM(PC),1=>ROM(PC+1),2=>ROM(PC+2));	--å–æŒ‡ä»¤
 							dir:=CONV_INTEGER(IR(1));
 							DPTR:= RAMSFR(aDPH) & RAMSFR(aDPL);
 			when PCPP	=> next_state<=ALU0; PC<=PC+ilen;
@@ -187,7 +187,7 @@ begin
 --					when 16#12# => next_state<=LCALL0; vPC:=CONV_STD_LOGIC_VECTOR(PC,16);	--LCALL
 
 --					when 16#22# => next_state<=RET0; vPC:=CONV_STD_LOGIC_VECTOR(PC,16);	--RET
---					when 16#32# => next_state<=RET0; vPC:=CONV_STD_LOGIC_VECTOR(PC,16);	--RETI	--ÖĞ¶Ï·µ»Ø
+--					when 16#32# => next_state<=RET0; vPC:=CONV_STD_LOGIC_VECTOR(PC,16);	--RETI	--ä¸­æ–­è¿”å›
 -------------------------------------------------------------------------------------------------
 --AJMP ad11
 			when 16#01#|16#21#|16#41#|16#61#|16#81#|16#A1#|16#C1#|16#E1# =>
@@ -244,10 +244,10 @@ begin
 							else
 								next_state<=ENDI;
 							end if;
-			when PCrel	=> next_state<=ENDI;	if rel<128 then PC<=PC+rel;	--PC=PC+rel(²¹Âë)
+			when PCrel	=> next_state<=ENDI;	if rel<128 then PC<=PC+rel;	--PC=PC+rel(è¡¥ç )
 													else PC<=PC+rel-256;
 												end if;
-	----PÆæÅ¼±êÖ¾Î»
+	----På¥‡å¶æ ‡å¿—ä½
 	--				RAMSFR(aPSW)(aP)<= RAMSFR(aA)(0) XOR RAMSFR(aA)(1) XOR RAMSFR(aA)(2) XOR RAMSFR(aA)(3) XOR RAMSFR(aA)(4) XOR RAMSFR(aA)(5) XOR RAMSFR(aA)(6) XOR RAMSFR(aA)(7);
 			when ENDI	=> next_state<=GETI; 
 							RAMSFR(aDPH)<=DPTR(15 downto 8); RAMSFR(aDPL)<=DPTR(7 downto 0);
