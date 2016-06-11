@@ -17,7 +17,7 @@ package comMCU is
 
 	subtype memByte is std_logic_vector(7 downto 0);	--MEMORY Byte
 	type MEMORY is array (NATURAL range <>) of memByte;	--MEMORY
-----¸÷¸öSFR¼Ä´æÆ÷µØÖ·
+----å„ä¸ªSFRå¯„å­˜å™¨åœ°å€
 	constant aP0	:integer:=16#80#;
 	constant aSP 	:integer:=16#81#;
 	constant aDPL	:integer:=16#82#;
@@ -39,7 +39,7 @@ package comMCU is
 --	constant aPSW	:integer:=16#D0#;
 	constant aA		:integer:=16#E0#;
 	constant aB		:integer:=16#F0#;
-	--PSW³ÌĞò×´Ì¬×Ö--e.g.SFR(PSW)(CY)
+	--PSWç¨‹åºçŠ¶æ€å­—--e.g.SFR(PSW)(CY)
 --	constant aCY	:integer:=7;
 --	constant aAC	:integer:=6;
 --	constant aRS0	:integer:=4;
@@ -95,7 +95,7 @@ package comMCU is
            );
 	end component;
 -----------------------------------------------
-----¶¨Òå¼üÅÌ°´¼ü×´Ì¬ÀàĞÍ£¨ÎŞ/Í¨Âë/¶ÏÂë£©	
+----å®šä¹‰é”®ç›˜æŒ‰é”®çŠ¶æ€ç±»å‹ï¼ˆæ— /é€šç /æ–­ç ï¼‰	
 	type KEYSTATE is ( NONE,MAKE,BREAK );
 -----------------------------------------------
 	component PS2Keyboard
