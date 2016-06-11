@@ -44,16 +44,16 @@ ps2:process(reset,PS2Clk)
 			flag<=NONE;
 			out_S<=(others=>'1');
 		elsif falling_edge(PS2Clk) then
-		--¼ì²âµÍµçÆ½£¬ÈôÓĞÔò½øĞĞÏÂÒ»Î»¼ì²â£¬½ÓÊÕ±êÊ¶ÖÃÁã
-		--¼ì²âÏÂÒ»Î»±£´æ£¬ÖÃÎ»Êä³ö£¬½á¹û×ÔÊä³öºó±£´æÖÁÏÂÒ»Î»¼ì²â¿ªÊ¼£¬Ê±¼ä×î¶ÌÎªÁ½¸öÂëÔªÖÜÆÚ
-		--¼ì²âÊÇ·ñÍ£Ö¹Î»£¬ÓĞÔòÊä³ö£¬½ÓÊÕ±êÊ¶ÖÃÎ»£¨½ÓÊÕ±êÊ¶³ÖĞøÒ»¸öÂëÔªÖÜÆÚ£©£¬ÎŞÔòÖØĞÂ¿ªÊ¼¼ì²â
+		--æ£€æµ‹ä½ç”µå¹³ï¼Œè‹¥æœ‰åˆ™è¿›è¡Œä¸‹ä¸€ä½æ£€æµ‹ï¼Œæ¥æ”¶æ ‡è¯†ç½®é›¶
+		--æ£€æµ‹ä¸‹ä¸€ä½ä¿å­˜ï¼Œç½®ä½è¾“å‡ºï¼Œç»“æœè‡ªè¾“å‡ºåä¿å­˜è‡³ä¸‹ä¸€ä½æ£€æµ‹å¼€å§‹ï¼Œæ—¶é—´æœ€çŸ­ä¸ºä¸¤ä¸ªç å…ƒå‘¨æœŸ
+		--æ£€æµ‹æ˜¯å¦åœæ­¢ä½ï¼Œæœ‰åˆ™è¾“å‡ºï¼Œæ¥æ”¶æ ‡è¯†ç½®ä½ï¼ˆæ¥æ”¶æ ‡è¯†æŒç»­ä¸€ä¸ªç å…ƒå‘¨æœŸï¼‰ï¼Œæ— åˆ™é‡æ–°å¼€å§‹æ£€æµ‹
 			case vCount is
 				when 0 => vData(0):=PS2Data; if vData(0)='0' then vCount:=1; end if;
 												flag<=NONE;
 				when 1 to 9 => vData(vCount):=PS2Data; vCount:=vCount+1;
 				when 10 => vData(vCount):=PS2Data;	if vData(8 downto 1)=X"F0" then 
-														vCount:=vCount+1;		--ÅĞ¶ÏÊÇ¶ÏÂë£¬¼ÌĞøÏòÏÂÉ¨Ãè
-													else flag<=MAKE;vCount:=0;	--È·¶¨ÊÇÍ¨Âë£¬ÖÃ±êÊ¶¡¢·µ»Ø
+														vCount:=vCount+1;		--åˆ¤æ–­æ˜¯æ–­ç ï¼Œç»§ç»­å‘ä¸‹æ‰«æ
+													else flag<=MAKE;vCount:=0;	--ç¡®å®šæ˜¯é€šç ï¼Œç½®æ ‡è¯†ã€è¿”å›
 														out_S(7 downto 0)<=vData(8 downto 1);
 													end if;
 				when 11 => vData(vCount):=PS2Data; if vData(0)='0' then vCount:=12;
@@ -61,7 +61,7 @@ ps2:process(reset,PS2Clk)
 													end if;
 				when 12 to 20 => vData(vCount):=PS2Data; vCount:=vCount+1;
 				when 21 => vData(vCount):=PS2Data;	if vData(21)='1' then 
-														vCount:=0;flag<=BREAK;	--È·¶¨ÊÇ¶ÏÂë£¬ÖÃ±êÊ¶¡¢·µ»Ø
+														vCount:=0;flag<=BREAK;	--ç¡®å®šæ˜¯æ–­ç ï¼Œç½®æ ‡è¯†ã€è¿”å›
 														out_S(7 downto 0)<=vData(8 downto 1);
 														out_S(15 downto 8)<=vData(19 downto 12);
 													else vCount:=0;flag<=NONE;
